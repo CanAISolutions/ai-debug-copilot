@@ -1,0 +1,1 @@
+# This demo uses Python's built‑in unittest module and has no external dependencies.

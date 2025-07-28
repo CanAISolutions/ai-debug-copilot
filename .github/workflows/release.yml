@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    env:
+      # Personal Access Token for VS Marketplace (optional)
+      VSCE_PAT: ${{ secrets.VSCE_PAT }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install vsce
+        run: npm install -g @vscode/vsce
+
+      - name: Package extension
+        run: |
+          # Use vsce to create a VS Code extension package (.vsix)
+          vsce package -o ai-debugging-copilot.vsix
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          files: ai-debugging-copilot.vsix
+
+      - name: Publish to internal feed (optional)
+        if: env.VSCE_PAT != ''
+        run: |
+          echo "Publishing to VS Marketplace..."
+          npm install -g @vscode/vsce
+          vsce publish --packagePath ai-debugging-copilot.vsix -p $VSCE_PAT

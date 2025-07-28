@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<!--
+  This file provides a basic UI for the AI Debugging Copilot WebView. It mirrors the
+  HTML structure generated in `getWebviewContent` within src/extension.ts. It is
+  included here for clarity and potential future usage where the extension may
+  choose to load an external HTML file instead of constructing it inline.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline';" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Debugging Copilot</title>
+    <style>
+      body { font-family: sans-serif; padding: 16px; }
+      h2 { margin-bottom: 1rem; }
+      select { width: 100%; }
+      textarea { width: 100%; min-height: 100px; margin-bottom: 1rem; }
+      button { margin-top: 0.5rem; padding: 0.5rem 1rem; }
+      .banner { display: none; padding: 0.5rem; margin-bottom: 1rem; border-radius: 4px; background-color: #fffae6; border: 1px solid #ffd42a; font-weight: bold; }
+      .diff-viewer { font-family: monospace; border: 1px solid #ddd; padding: 0.5rem; margin-top: 0.5rem; overflow-x: auto; white-space: pre; }
+      .diff-line.added { color: green; }
+      .diff-line.removed { color: red; }
+      .diff-line.header { color: purple; font-weight: bold; }
+      #patchesContainer { margin-top: 1rem; }
+      #followUpContainer { margin-top: 1rem; }
+      #followUpContainer textarea { height: 60px; }
+      #followUpContainer button { margin-right: 0.5rem; }
+    </style>
+  </head>
+  <body>
+    <h2>AI Debugging Copilot</h2>
+    <div id="rootCauseBanner" class="banner"></div>
+    <div>
+      <label for="fileSelect"><strong>Changed files</strong> (select files to include):</label><br />
+      <select id="fileSelect" multiple size="8"></select>
+    </div>
+    <div>
+      <label for="errorLog"><strong>Error log</strong> (paste failing test output):</label><br />
+      <textarea id="errorLog" placeholder="Paste your error log here..."></textarea>
+    </div>
+    <div>
+      <label for="summary"><strong>Recent changes summary</strong> (describe what you changed):</label><br />
+      <textarea id="summary" placeholder="Briefly describe recent changes..."></textarea>
+    </div>
+    <button id="diagnoseButton">Diagnose</button>
+    <div id="patchesContainer"></div>
+    <div id="followUpContainer" style="display:none;">
+      <p id="followUpQuestion" style="font-weight:bold;"></p>
+      <textarea id="followUpAnswer" placeholder="Your answer..."></textarea><br />
+      <button id="submitFollowUp">Submit</button>
+      <button id="escalateButton" style="display:none;">Escalate</button>
+    </div>
+    <script>
+      (function () {
+        const vscode = acquireVsCodeApi();
+        // `defaultFiles` should be injected by the extension when loading this file
+        const select = document.getElementById('fileSelect');
+        const rootBanner = document.getElementById('rootCauseBanner');
+        const patchesContainer = document.getElementById('patchesContainer');
+        const followUpContainer = document.getElementById('followUpContainer');
+        const followUpQuestion = document.getElementById('followUpQuestion');
+        const followUpAnswer = document.getElementById('followUpAnswer');
+        const submitFollowUp = document.getElementById('submitFollowUp');
+        const escalButton = document.getElementById('escalateButton');
+        let followUpCount = 0;
+        // populate options if defaultFiles is present
+        if (typeof defaultFiles !== 'undefined' && Array.isArray(defaultFiles)) {
+          defaultFiles.forEach((file) => {
+            const option = document.createElement('option');
+            option.value = file;
+            option.textContent = file;
+            option.selected = true;
+            select.appendChild(option);
+          });
+        }
+        document.getElementById('diagnoseButton').addEventListener('click', () => {
+          const selectedFiles = Array.from(select.selectedOptions).map((opt) => opt.value);
+          const errorLog = document.getElementById('errorLog').value || '';
+          const summary = document.getElementById('summary').value || '';
+          followUpCount = 0;
+          vscode.postMessage({
+            command: 'diagnose',
+            files: selectedFiles,
+            error_log: errorLog,
+            summary: summary,
+          });
+        });
+        function renderDiff(patch) {
+          const pre = document.createElement('pre');
+          pre.className = 'diff-viewer';
+          const lines = patch.split('\n');
+          lines.forEach((line) => {
+            const div = document.createElement('div');
+            if (line.startsWith('+')) {
+              div.className = 'diff-line added';
+            } else if (line.startsWith('-')) {
+              div.className = 'diff-line removed';
+            } else if (line.startsWith('@@')) {
+              div.className = 'diff-line header';
+            } else {
+              div.className = 'diff-line';
+            }
+            div.textContent = line;
+            pre.appendChild(div);
+          });
+          return pre;
+        }
+        window.addEventListener('message', (event) => {
+          const message = event.data;
+          if (message.command === 'diagnoseResult') {
+            const data = message.data || {};
+            if (data.root_cause) {
+              rootBanner.style.display = 'block';
+              rootBanner.textContent = data.root_cause;
+            } else {
+              rootBanner.style.display = 'none';
+            }
+            patchesContainer.innerHTML = '';
+            const patches = Array.isArray(data.patches) ? data.patches : [];
+            patches.forEach((patch, idx) => {
+              const title = document.createElement('div');
+              title.textContent = `Patch ${idx + 1}`;
+              title.style.fontWeight = 'bold';
+              patchesContainer.appendChild(title);
+              patchesContainer.appendChild(renderDiff(patch));
+            });
+            if (data.follow_up) {
+              followUpContainer.style.display = 'block';
+              followUpQuestion.textContent = data.follow_up;
+              if (followUpCount >= 3) {
+                submitFollowUp.style.display = 'none';
+                escalButton.style.display = 'inline-block';
+              } else {
+                submitFollowUp.style.display = 'inline-block';
+                escalButton.style.display = 'none';
+              }
+            } else {
+              followUpContainer.style.display = 'none';
+            }
+          }
+        });
+        submitFollowUp.addEventListener('click', () => {
+          const answer = followUpAnswer.value || '';
+          followUpAnswer.value = '';
+          followUpCount++;
+          vscode.postMessage({ command: 'followUp', answer });
+        });
+        escalButton.addEventListener('click', () => {
+          vscode.postMessage({ command: 'escalate' });
+        });
+      })();
+    </script>
+  </body>
+</html>
