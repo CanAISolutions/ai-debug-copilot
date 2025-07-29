@@ -1,0 +1,30 @@
+{
+  "name": "ai-debug-copilot",
+  "version": "1.0.0",
+  "description": "<!-- Badges --> ![Build Status](https://github.com/your-account/your-repo/actions/workflows/ci.yml/badge.svg) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)",
+  "main": "answer.js",
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "typescript": "^5.8.3",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CanAISolutions/ai-debug-copilot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/CanAISolutions/ai-debug-copilot/issues"
+  },
+  "homepage": "https://github.com/CanAISolutions/ai-debug-copilot#readme"
+}

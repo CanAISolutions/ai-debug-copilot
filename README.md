@@ -49,6 +49,31 @@ The script will:
 5. Rerun the tests. They should pass after the patch is applied.
 6. Shut down the backend server.
 
+## Running the demo on Windows (PowerShell)
+
+If you are on Windows, use the provided `run_demo.ps1` script:
+
+```powershell
+# From the project root
+powershell -ExecutionPolicy Bypass -File .\run_demo.ps1 -Port 8000
+```
+
+The script performs the same steps as `run_demo.sh`:
+1. Launches the FastAPI backend on `localhost:8000` in a background job.
+2. Executes failing unit tests in `demo_repo` to generate `error.log`.
+3. Builds the payload (`payload.json`) and calls the `/diagnose` endpoint.
+4. Saves any returned patch to `patch.diff` and attempts to apply it.
+5. Reruns the tests to verify the fix.
+6. Stops the backend.
+
+Ensure you have installed the Python dependencies first:
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+If you do not have execution-policy permissions, you can copy-paste the commands inside `run_demo.ps1` into an interactive shell.
+
 ## Caveats
 
 This proof‑of‑concept uses a simulated AI response when no OpenAI API key
