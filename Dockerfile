@@ -19,6 +19,11 @@ RUN pip install --no-cache-dir --upgrade pip \
 FROM base
 WORKDIR /app
 
+# Re-install Python dependencies in the runtime image to guarantee all console
+# entry points (e.g. uvicorn) are present even if wildcard copy misses them.
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
 # Copy virtual environment from build layer (uses the default site-packages path)
 COPY --from=build /usr/local/lib/python*/ /usr/local/lib/python*/
 COPY --from=build /usr/local/bin/ /usr/local/bin/
