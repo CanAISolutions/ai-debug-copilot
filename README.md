@@ -4,6 +4,14 @@
 
 ---
 
+## 📖 Documentation
+
+- **[Complete Usage Guide](USAGE_GUIDE.md)** - Step-by-step instructions for using the AI Debugging Copilot
+- **[ROADMAP.md](ROADMAP.md)** - Upcoming features and development plans
+- **[auto-actions.log.md](auto-actions.log.md)** - Development progress and changes
+
+---
+
 ## 🛠 How it works (end-to-end)
 
 1. **Run your JS/TS test suite** – the VS Code extension auto-detects Vitest/Jest scripts and executes them with JSON reporter.
@@ -65,7 +73,7 @@ npm ci
 pytest            # Python
 npx vitest run    # JS/TS
 
-# 3. Click “AI Debug Copilot › Diagnose” in VS Code  
+# 3. Click “AI Debug Copilot › Diagnose” in VS Code
    – or press ⌘⇧P / Ctrl+Shift+P and type **Diagnose**.
 
 # 4. Review root cause, apply patch, re-run tests.
