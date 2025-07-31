@@ -8,8 +8,9 @@ export default defineConfig({
     globals: true,
     include: ['src/**/__tests__/**/*.test.ts'],
     exclude: ['dist', 'node_modules'],
+    reporters: ['default', ['json', { outputFile: 'vitest.json' }], ['html', { outputDir: 'vitest-html' }]],
     coverage: {
       reporter: ['text', 'html'],
-    },
+    }
   },
 });

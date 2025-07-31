@@ -13,9 +13,10 @@ This file records significant automated or scripted changes done by the AI assis
 | 2025-07-29 | Added `/healthz` endpoint and GitHub Action workflow `remote-health.yml` |
 | 2025-07-29 | Created `ROADMAP.md` to track upcoming enhancements |
 | 2025-07-29 | Added helper script `run_remote_demo.py` to send payloads to remote backend |
+| 2025-07-29 | Added failing-test collector script & updated Vitest config with JSON/HTML reporters |
 
 ---
 
 ## In-Progress / Next
-1. Auto-run project tests, capture failing specs, send to backend  *(implementation started)*
+1. Auto-run project tests, capture failing specs, send to backend  *(implementation ongoing)*
 2. Cursor-style follow-up WebView panel (pending)
