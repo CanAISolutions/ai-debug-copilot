@@ -14,9 +14,9 @@ This file records significant automated or scripted changes done by the AI assis
 | 2025-07-29 | Created `ROADMAP.md` to track upcoming enhancements |
 | 2025-07-29 | Added helper script `run_remote_demo.py` to send payloads to remote backend |
 | 2025-07-29 | Added failing-test collector script & updated Vitest config with JSON/HTML reporters |
+| 2025-07-29 | Integrated collector into VS Code extension: auto-runs tests, merges failing files, sends enriched error log |
 
 ---
 
 ## In-Progress / Next
-1. Auto-run project tests, capture failing specs, send to backend  *(implementation ongoing)*
-2. Cursor-style follow-up WebView panel (pending)
+1. Cursor-style follow-up WebView panel (pending)

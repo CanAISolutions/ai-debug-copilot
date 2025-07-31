@@ -222,8 +222,24 @@ export function activate(context: vscode.ExtensionContext) {
       return;
     }
     const workspaceRoot = workspaceFolders[0].uri.fsPath;
+    // Run failing-test collector (vitest) to gather failing specs
+    let failingFiles: string[] = [];
+    let failingLog = '';
+    try {
+      const collectScript = path.join(context.extensionPath, 'scripts', 'collect-failing-tests.js');
+      if (fs.existsSync(collectScript)) {
+        const output = cp.execSync(`node "${collectScript}"`, { cwd: workspaceRoot }).toString();
+        const parsed = JSON.parse(output);
+        for (const fail of parsed.failures || []) {
+          if (fail.file) failingFiles.push(path.relative(workspaceRoot, fail.file));
+          if (Array.isArray(fail.failureMessages)) failingLog += fail.failureMessages.join('\n') + '\n';
+        }
+      }
+    } catch (err) {
+      console.warn('collect-failing-tests error', err);
+    }
     // Determine default set of files (git diff)
-    const changedFiles = getChangedFiles(workspaceRoot);
+    const changedFiles = Array.from(new Set([...getChangedFiles(workspaceRoot), ...failingFiles]));
     // Create and show a new Webview panel
     const panel = vscode.window.createWebviewPanel(
       'aiDebugCopilot',
@@ -239,7 +255,7 @@ export function activate(context: vscode.ExtensionContext) {
     panel.webview.onDidReceiveMessage(async (message: any) => {
       if (message.command === 'diagnose') {
         const selectedFiles: string[] = message.files;
-        const errorLog: string = message.error_log || '';
+        const errorLog: string = message.error_log || failingLog;
         const summary: string = message.summary || '';
         // Prepare file payloads
         const filesPayload: any[] = [];
