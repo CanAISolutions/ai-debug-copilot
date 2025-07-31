@@ -64,6 +64,9 @@ function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri, ch
       select { width: 100%; }
       textarea { width: 100%; min-height: 100px; margin-bottom: 1rem; }
       button { margin-top: 0.5rem; padding: 0.5rem 1rem; }
+      .diff-line.added { color: green; }
+      .diff-line.removed { color: red; }
+      .diff-line.header { color: purple; font-weight: bold; }
       .banner { display: none; padding: 0.5rem; margin-bottom: 1rem; border-radius: 4px; background-color: #fffae6; border: 1px solid #ffd42a; font-weight: bold; }
       .diff-viewer { font-family: monospace; border: 1px solid #ddd; padding: 0.5rem; margin-top: 0.5rem; overflow-x: auto; white-space: pre; }
       .diff-line.added { color: green; }
@@ -92,6 +95,7 @@ function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri, ch
       <textarea id="summary" placeholder="Briefly describe recent changes..."></textarea>
     </div>
     <button id="diagnoseButton">Diagnose</button>
+    <div id="spinner" style="display:none;margin-top:8px;">⏳ Running...</div>
     <!-- Container for patches/diffs -->
     <div id="patchesContainer"></div>
     <!-- Follow-up question container -->
@@ -123,7 +127,9 @@ function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri, ch
           select.appendChild(option);
         });
         // Handle diagnose button click
-        document.getElementById('diagnoseButton').addEventListener('click', () => {
+        const diagnoseBtn = document.getElementById('diagnoseButton');
+    const spinner = document.getElementById('spinner');
+    diagnoseBtn?.addEventListener('click', () => { spinner!.style.display = 'block';
           const selectedFiles = Array.from(select.selectedOptions).map(opt => opt.value);
           const errorLog = document.getElementById('errorLog').value || '';
           const summary = document.getElementById('summary').value || '';
@@ -160,6 +166,7 @@ function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri, ch
         // Receive messages from the extension
         window.addEventListener('message', event => {
           const message = event.data;
+          if (spinner) spinner.style.display = 'none';
           if (message.command === 'diagnoseResult') {
             const data = message.data || {};
             // Update root cause banner
@@ -213,6 +220,8 @@ function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri, ch
 }
 
 export function activate(context: vscode.ExtensionContext) {
+  const status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+  context.subscriptions.push(status);
   // Register the command that triggers the debug copilot
   const disposable = vscode.commands.registerCommand('extension.debugWithAICopilot', async () => {
     // Ensure a workspace is open
@@ -300,6 +309,8 @@ export function activate(context: vscode.ExtensionContext) {
     // Helper to post a payload to the backend and return result to webview
     async function sendPayloadToBackend(payload: any) {
       try {
+        status.text = '$(sync~spin) AI Diagnose';
+        status.show();
         const response = await fetch('http://localhost:8000/diagnose', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -307,8 +318,10 @@ export function activate(context: vscode.ExtensionContext) {
         });
         const json = await response.json();
         panel.webview.postMessage({ command: 'diagnoseResult', data: json });
+        status.hide();
       } catch (err) {
         panel.webview.postMessage({ command: 'diagnoseResult', data: { error: 'Failed to contact backend: ' + err } });
+        status.hide();
       }
     }
   });

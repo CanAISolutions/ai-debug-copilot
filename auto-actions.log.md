@@ -1,4 +1,4 @@
 # Auto Actions Log
 
-... prior lines ...
-| 2025-07-30 | Expanded README with How-it-works, quick-start & Mermaid diagram |
+... prior entries ...
+| 2025-07-30 | Added spinner & status-bar progress, diff colours, integrated into extension |
