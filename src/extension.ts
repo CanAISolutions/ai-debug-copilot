@@ -316,3 +316,6 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {}
+
+// Export internal helpers for unit testing
+export { getChangedFiles, gzipBase64 };

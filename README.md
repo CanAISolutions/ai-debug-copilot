@@ -104,3 +104,53 @@ pre-commit run --all-files
 
 In addition, a GitHub Actions workflow will run the pre‑commit hooks on
 every pull request and push to `main`.
+
+## Local development
+
+```bash
+# Python deps
+python -m venv .venv && source .venv/bin/activate  # or .venv\Scripts\Activate on Windows
+python -m pip install -r requirements.txt
+
+# JS tooling (Vitest etc.)
+npm ci  # installs from package-lock.json
+```
+
+### Run the backend locally
+
+```bash
+uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+# Open http://127.0.0.1:8000/docs for Swagger UI
+```
+
+### Run tests
+
+```bash
+pytest            # Python unit tests
+npx vitest --run  # Extension tests (Vitest)
+```
+
+## Deployment on Render
+
+The repository ships with a production-ready multi-stage `Dockerfile`.
+Render automatically builds the container and starts the service.
+
+1. Push the code to GitHub (already done).
+2. In the Render dashboard choose **New → Web Service** and connect the repo.
+3. Select **Docker** as the environment; leave build/start commands empty so Render uses the `CMD`.
+4. Add environment variables:
+   * `OPENAI_API_KEY` (optional – simulation mode without it)
+   * `METRICS_DB=/data/metrics.db` if you attach a persistent disk for metrics.
+5. Click **Create Web Service**.
+
+Render injects `PORT`; the Dockerfile exposes this variable and runs:
+
+```sh
+uvicorn app.main:app --host 0.0.0.0 --port ${PORT}
+```
+
+Once deployed, test with:
+
+```bash
+curl -X POST https://<service>.onrender.com/diagnose -H "Content-Type: application/json" -d '{"files": [], "error_log": "", "summary": "health"}'
+```
