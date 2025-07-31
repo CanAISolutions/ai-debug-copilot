@@ -15,11 +15,12 @@ This file records significant automated or scripted changes done by the AI assis
 | 2025-07-29 | Added helper script `run_remote_demo.py` to send payloads to remote backend |
 | 2025-07-29 | Added failing-test collector script & updated Vitest config with JSON/HTML reporters |
 | 2025-07-29 | Integrated collector into VS Code extension: auto-runs tests, merges failing files, sends enriched error log |
-| 2025-07-30 | Added backend FastAPI scenario tests & coverage workflow; updated roadmap with coverage tasks |
-| 2025-07-30 | Added utils unit tests and choose_model/decoder coverage (backend now 82%) |
+| 2025-07-30 | Achieved 82% backend coverage, added coverage workflow, utils tests |
+| 2025-07-30 | Added roadmap item for Advanced Prompt Engineering & Retrieval |
 
 ---
 
 ## In-Progress / Next
 2. Instrument TS coverage & add extension tests
 3. Add coverage gates in GitHub Actions (extension)
+4. Design prompt builder with few-shot examples & evaluation harness

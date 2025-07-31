@@ -102,4 +102,22 @@ Extend existing backend + extension workflows to enforce the coverage thresholds
 
 ---
 
+## 8. Advanced Prompt Engineering & Retrieval (Backend)
+*Status: [ ]*
+
+### Description
+Design an iterative prompting framework that improves diagnosis quality by:
+1. Splitting prompt into System + Retrieval + Context + Question sections.
+2. Adding few-shot examples of common failure patterns (circular import, missing dependency, wrong assertion).
+3. Logging model responses + token usage for offline evaluation.
+4. Implementing a prompt-evaluation harness with synthetic fixtures to measure accuracy.
+
+### Acceptance Criteria
+- Prompt builder module outputs well-structured JSON ready for OpenAI API.
+- At least 3 few-shot exemplars included and unit-tested.
+- Offline evaluation script shows ≥20 % improvement in accuracy on fixture set vs current baseline.
+- No additional API cost during evaluation (uses simulation harness).
+
+---
+
 > _Last updated: 2025-07-30_
