@@ -1,0 +1,10 @@
+[
+  {
+    "pattern": "circular import",
+    "example": "<error_log>ImportError: cannot import name 'login' from partially initialized module 'src.auth.user'</error_log>\n<analysis>Circular import between user.py and login.py.</analysis>\n<fix>Remove the import in user.py.</fix>"
+  },
+  {
+    "pattern": "missing dependency",
+    "example": "<error_log>ModuleNotFoundError: No module named 'httpx'</error_log>\n<analysis>Missing dependency.</analysis>\n<fix>Run 'pip install httpx' and add to requirements.txt.</fix>"
+  }
+]

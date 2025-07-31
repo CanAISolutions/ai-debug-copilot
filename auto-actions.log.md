@@ -17,10 +17,11 @@ This file records significant automated or scripted changes done by the AI assis
 | 2025-07-29 | Integrated collector into VS Code extension: auto-runs tests, merges failing files, sends enriched error log |
 | 2025-07-30 | Achieved 82% backend coverage, added coverage workflow, utils tests |
 | 2025-07-30 | Added roadmap item for Advanced Prompt Engineering & Retrieval |
+| 2025-07-30 | Added git helper test & Istanbul coverage thresholds for extension |
+| 2025-07-30 | Scaffolded `prompt_builder.py` with few-shot examples & unit test |
 
 ---
 
 ## In-Progress / Next
-2. Instrument TS coverage & add extension tests
-3. Add coverage gates in GitHub Actions (extension)
-4. Design prompt builder with few-shot examples & evaluation harness
+- Finalise prompt builder evaluation harness
+- Raise extension coverage ≥60% (threshold set)

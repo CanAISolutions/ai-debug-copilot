@@ -10,7 +10,12 @@ export default defineConfig({
     exclude: ['dist', 'node_modules'],
     reporters: ['default', ['json', { outputFile: 'vitest.json' }], ['html', { outputDir: 'vitest-html' }]],
     coverage: {
+      provider: 'istanbul',
       reporter: ['text', 'html'],
+      lines: 60,
+      functions: 60,
+      branches: 60,
+      statements: 60,
     }
   },
 });
