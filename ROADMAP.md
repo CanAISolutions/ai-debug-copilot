@@ -65,4 +65,41 @@ Expose FastAPI route that returns Prometheus-formatted counters/gauges so Render
 
 ---
 
-> _Last updated: 2025-07-29_
+## 5. Improve backend test coverage to ≥ 80 %
+*Status: [ ]*
+
+### Description
+Add FastAPI `TestClient` scenario tests for `/healthz` and `/diagnose` (happy-path, large payload, model-fallback) plus edge-case unit tests in utils.
+
+### Acceptance Criteria
+- Coverage report shows ≥ 80 % for `app/` package.
+- CI fails if coverage drops below threshold (`--cov-fail-under=80`).
+
+---
+
+## 6. Instrument TS coverage & add extension tests
+*Status: [ ]*
+
+### Description
+Switch Vitest to Istanbul coverage plugin, create unit tests for new failure-collector & payload builder logic.
+
+### Acceptance Criteria
+- V8/Istanbul report shows ≥ 60 % for `src/`.
+- CI prints coverage summary; threshold ratchets upward over time.
+
+---
+
+## 7. Add coverage gates in GitHub Actions
+*Status: [ ]*
+
+### Description
+Extend existing backend + extension workflows to enforce the coverage thresholds defined above.
+
+### Acceptance Criteria
+- `pytest --cov --cov-fail-under` gate.
+- `vitest --coverage` gate with Istanbul.
+- Workflow status red on drop.
+
+---
+
+> _Last updated: 2025-07-30_
