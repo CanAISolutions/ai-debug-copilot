@@ -2,7 +2,7 @@
 
 This document tracks upcoming work items (no external Taskmaster system required).  Each task has a short description, acceptance criteria, and status.
 
-Legend:  
+Legend:
 `[ ]` = not started  `[~]` = in-progress  `[x]` = done
 
 ---
@@ -27,8 +27,8 @@ Detect the project’s JavaScript/TypeScript test runner (Vitest, Jest, etc.), r
 
 ### Description
 Extend existing file-collection logic to include:
-1. Failing spec files.  
-2. Source files referenced in the stack trace.  
+1. Failing spec files.
+2. Source files referenced in the stack trace.
 3. The raw stack trace in `error_log`.
 
 ### Acceptance Criteria
