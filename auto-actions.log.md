@@ -16,11 +16,10 @@ This file records significant automated or scripted changes done by the AI assis
 | 2025-07-29 | Added failing-test collector script & updated Vitest config with JSON/HTML reporters |
 | 2025-07-29 | Integrated collector into VS Code extension: auto-runs tests, merges failing files, sends enriched error log |
 | 2025-07-30 | Added backend FastAPI scenario tests & coverage workflow; updated roadmap with coverage tasks |
-| 2025-07-30 | Added utils unit tests and choose_model/decoder coverage |
+| 2025-07-30 | Added utils unit tests and choose_model/decoder coverage (backend now 82%) |
 
 ---
 
 ## In-Progress / Next
-1. Reach ≥ 80 % backend coverage (current ~60 %)
 2. Instrument TS coverage & add extension tests
 3. Add coverage gates in GitHub Actions (extension)
