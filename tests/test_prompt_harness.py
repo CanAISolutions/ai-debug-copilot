@@ -15,11 +15,11 @@ def score(result: dict, expected_keywords: list[str]) -> bool:
     return all(k in root for k in expected_keywords)
 
 def test_fixtures_accuracy():
-    fixtures = list(load_fixtures())
-    passed = 0
+        fixtures = list(load_fixtures())
+    failures: list[str] = []
     for fx in fixtures:
         prompt = build_prompt(fx["error_log"], fx["summary"], None, None)
         resp = simulate_response(prompt)
-        if score(resp, fx["expected_keywords"]):
-            passed += 1
-    assert passed == len(fixtures), f"{passed}/{len(fixtures)} fixtures passed"
+        if not score(resp, fx["expected_keywords"]):
+            failures.append(fx["name"])
+    assert not failures, f"Fixtures failed: {', '.join(failures)}"

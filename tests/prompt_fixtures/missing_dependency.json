@@ -1,0 +1,6 @@
+{
+  "name": "missing dependency",
+  "error_log": "ModuleNotFoundError: No module named 'httpx'",
+  "summary": "Added external calls but forgot to install httpx",
+  "expected_keywords": ["missing", "dependency", "httpx"]
+}

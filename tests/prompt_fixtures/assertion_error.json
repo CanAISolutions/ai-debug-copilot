@@ -1,0 +1,6 @@
+{
+  "name": "assertion error",
+  "error_log": "AssertionError: expected 2 to equal 3",
+  "summary": "Refactored math util multiply()",
+  "expected_keywords": ["assertion", "expected", "2", "3"]
+}

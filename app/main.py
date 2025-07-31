@@ -206,16 +206,14 @@ def diagnose(req: DiagnoseRequest):
     # Query vector store for relevant snippets based on the error log and summary
     query_text = f"{req.error_log}\n{req.summary}"
     vector_snippets = query_snippets(query_text, k=5)
-    # Compose the prompt for the model including context, error log, summary and file list
-    prompt_parts: list[str] = []
-    if vector_snippets:
-        prompt_parts.append("Relevant retrieved snippets:\n" + "\n\n".join(vector_snippets))
-    if context_section:
-        prompt_parts.append("Relevant code context:\n" + context_section)
-    prompt_parts.append(f"Error log:\n{req.error_log}")
-    prompt_parts.append(f"Summary of changes:\n{req.summary}")
-    prompt_parts.append("Files:\n" + "\n".join(f"{f['filename']}" for f in decoded_files))
-    prompt = "\n\n".join(prompt_parts)
+    # Build the prompt using the dedicated prompt builder (includes few-shot examples)
+    from . import prompt_builder  # local import to avoid cycles
+    prompt = prompt_builder.build_prompt(
+        error_log=req.error_log,
+        summary=req.summary,
+        retrieved_snippets=vector_snippets,
+        context_snippets=[context_section] if context_section else None,
+    )
     # Record start time for duration metric
     import time
     start_time = time.perf_counter()

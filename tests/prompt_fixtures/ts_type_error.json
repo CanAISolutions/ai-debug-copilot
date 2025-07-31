@@ -1,0 +1,6 @@
+{
+  "name": "typescript type error",
+  "error_log": "Property 'foo' does not exist on type 'Bar'",
+  "summary": "Converted Bar interface, forgot foo field",
+  "expected_keywords": ["type", "foo", "Bar"]
+}
