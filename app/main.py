@@ -174,6 +174,11 @@ def simulate_response(prompt: str) -> dict:
     }
 
 
+@app.get('/healthz')
+async def healthz():
+    return {"status": "ok"}
+
+
 @app.post('/diagnose')
 def diagnose(req: DiagnoseRequest):
     """Diagnose compilation or test failures using an AI model.
