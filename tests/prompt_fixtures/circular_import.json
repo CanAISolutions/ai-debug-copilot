@@ -1,0 +1,6 @@
+{
+  "name": "circular import",
+  "error_log": "ImportError: cannot import name 'login' from partially initialized module 'src.auth.user'",
+  "summary": "Refactored auth module, added new import to user.py",
+  "expected_keywords": ["circular", "import", "user.py", "login.py"]
+}
